@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<object th:include="fragments/fragment :: header" th:remove="tag"></object>
+</head>
+
+<body>
+	<nav th:replace="fragments/fragment :: navbar"></nav>
+	<span th:if="${listDealer} == null">
+		<h2>Maaf tidak ada dealer yang terdaftar</h2>
+		<a th:href="@{~/}">Kembali</a>
+		<hr>
+	</span>
+	
+	<span th:unless="${listDealer} == null">
+		<h2>Daftar Dealer Yang Ada:</h2>
+		<hr>
+		<div th:each="dealer : ${listDealer}">
+			<h4 th:text="'Alamat: ' + ${dealer.alamat}"></h4>
+			<h4 th:text="'Telepon: ' + ${dealer.noTelp}"></h4>
+			<h3>List Mobil:</h3>
+			
+			<table align="center">
+				<div th:if="${not #lists.isEmpty(dealer.listCar)}">
+				
+				<tr>
+					<td>Brand</td>
+					<td>Type</td>
+					<td>Price</td>
+					<td>Amount</td>
+				</tr>
+				<div th:each="car : ${dealer.listCar}">
+					<tr>
+						<td th:text="${car.brand}"></td>
+						<td th:text="${car.type}"></td>
+						<td th:text="${car.price}"></td>
+						<td th:text="${car.amount}"></td>
+					</tr>
+				</div>
+				</div>
+				<div th:unless="${not #lists.isEmpty(dealer.listCar)}">Maaf Tidak Ada Mobil yang Dijual</div>
+			</table>
+			<hr>
+		</div>
+	</span>
+	<a th:href="@{~/}">Kembali</a>
+</body>
+
+</html>

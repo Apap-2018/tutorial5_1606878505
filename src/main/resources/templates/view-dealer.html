@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<object th:include="fragments/fragment :: header" th:remove="tag"></object>
+</head>
+
+<body>
+	<nav th:replace="fragments/fragment :: navbar"></nav>
+	<span th:if="${dealer} == null">
+		<h2>Maaf dealer yang anda cari tidak ditemukan</h2>
+		<a th:href="@{~/}">Kembali</a>
+	</span>
+	
+	<span th:unless="${dealer} == null">
+	
+		<h3 th:text="'Dealer'"></h3>
+		<p th:text="'Alamat: ' + ${dealer.alamat}"></p>
+		<p th:text="'Telepon: ' + ${dealer.noTelp}"></p>
+		
+		<form th:action="@{/dealer/delete}">
+			<input type="hidden" name="dealerId" th:value="${dealer.id}">
+			<button type="submit">Hapus Dealer</button>
+		</form>
+		<br>
+		
+		<a class="btn btn-primary" th:href="@{/dealer/update{id}(id=${dealer.id})}">Update Dealer</a>
+		<br>
+		<br>
+		<h3>List Mobil:</h3>
+		<div th:if="${#lists.isEmpty(dealer.listCar)}">Maaf Tidak Ada Mobil yang Dijual</div>
+		
+		<div th:unless="${#lists.isEmpty(dealer.listCar)}">
+			<form th:action="@{/car/delete}" th:object="${dealer}" method="POST">
+				<table align="center">
+					<tr>
+						<td>No.</td>
+						<td>Brand</td>
+						<td>Type</td>
+						<td>Price</td>
+						<td>Amount</td>
+						<td>Delete</td>
+						<td>Update</td>
+					</tr>
+					<tr th:each="car,iterationStatus : *{listCar}">
+						<td th:text="${iterationStatus.count}"></td>
+						<td th:text="${car.brand}"></td>
+						<td th:text="${car.type}"></td>
+						<td th:text="${car.price} >= 1000000000 ? 'Diatas 1M' : 'Dibawah 1M'"></td>
+						<td th:text="${car.amount}"></td>
+						<td>
+							<input type="checkbox" th:field="*{listCar}" th:value="${car.id}"/>
+							<label th:for="${#ids.prev('listCar')}">Hapus</label>
+						</td>
+						<td>
+							<a class="btn btn-primary" th:href="@{/car/update{id}(id=${car.id})}">Update Car</a>
+						</td>
+					</tr>
+					</div>
+				</table>
+				<br>
+				<button type="submit">Hapus yang dipilih</button>
+			</form>
+		</div>
+		<br>
+		<br>
+		<a class="btn btn-primary"  th:href="@{/car/add/} + ${dealer.id}">Tambah Mobil</a>
+	</span>
+	
+</body>
+
+</html>
